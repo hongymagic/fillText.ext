@@ -1,6 +1,6 @@
 # Canvas (RenderingContext2D) fillText extension
 
-- CSS support
+- CSS support on fillText call
 
 ## Supported CSS properties
 
