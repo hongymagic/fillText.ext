@@ -1,23 +1,30 @@
-/*jslint devel: true, browser: true, es5: true, maxerr: 50, indent: 2 */
 
+/**
+ * An extension to `CanvasRenderingContext2D.prototype.fillText` to render text
+ * with CSS font, letter or word level properties such as:
+ *
+ *  - `letter-spacing`
+ *  - `word-spacing`
+ *  - `text-align`
+ * 
+ * and much more!
+ *
+ * @param parse {function} a method which converts CSS-property strings into a JSON object
+ */
 (function (window, parse) {
   'use strict';
 
 // Log
 
   var log = window.log || function () {
-    if (window.console) {
-      window.console.log(Array.prototype.slice.call(arguments));
-    }
-  },
-
-    IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0],
+      if (window.console) {
+        window.console.log(Array.prototype.slice.call(arguments));
+      }
+    },
 
 // Copy reference to previous fillText operation
   
-    document = window.document,
-    canvas = document.createElement('canvas'),
-    fillText = canvas.getContext('2d').fillText,
+    fillText = window.CanvasRenderingContext2D.prototype.fillText,
 
 // Reference to commonly used methods
   
@@ -29,15 +36,15 @@
 
 //
 // The new fillText(text, x, y, [css...]);
+//
 // @param text  {string}  Text to render on canvas
 // @param x     {number}  x-component of the cordinate to start from
 // @param y     {number}  y-component of the cordinate to start from
 // @param [css] {string}  CSS-style properties
-// @usage   
-//  context.fillText('Apple', 0, 50, 'letter-spacing: 5px');
+// @usage context.fillText('Apple', 0, 50, 'letter-spacing: 5px');
+//
 
-  CanvasRenderingContext2D.prototype.fillText = function (text, x, y) {
-    log(this, arguments);
+  window.CanvasRenderingContext2D.prototype.fillText = function (text, x, y) {
 
 // Argument type checking
 
@@ -47,37 +54,40 @@
 
 // Extract css properties
 
-    var css = {}, //parse.apply(parse, splice.call(slice.call(arguments), 3)),
+    var css = parse.apply(parse, splice.call(slice.call(arguments), 3)),
       prop, 
       i,
-      matrix = IDENTITY_MATRIX,
       chars = split.call(text, ''),
       charlen = chars.length,
       c,
-      transform;
 
-    log('Applying CSS to matrix', matrix);
+// Firefox 6's default letter-spacing is different to Chrome 13
 
-    for (prop in css) {
-      if (css.hasOwnProperty(prop)) {
+      letterSpacing = 0,
+      wordSpacing;
 
-// CSS detected, so modify rendering procedure
+// Apply CSS properties recognised by this extension to canvas
 
-        if (prop === 'letterSpacing') {
-          matrix[4] = parseFloat(css[prop]);
-        }
-        
-      }
+    if (css.font) {
+      this.font = css.font;
     }
 
-    log('Matrix formed', matrix);
+    if (css.letterSpacing) {
+      letterSpacing += parseFloat(css.letterSpacing);
+    }
 
-    for (i = 0; i < charlen; i + 1) {
-      transform = slice.call(matrix);
+// Render
+
+    fillText.call(this, text, x, y - 20);
+
+    for (i = 0; i < charlen; i += 1) {
+      x = i === 0 ? x : x + letterSpacing;
       c = chars[i];
-      transform[4] += this.measureText(c).width;
       fillText.call(this, c, x, y);
-      this.transform.apply(this, transform);
+      x += this.measureText(c).width;
+
+      log(c, this.measureText(c).width, letterSpacing);
     }
   };
 }(this, window.parse));
+

@@ -15,15 +15,20 @@
   <meta name="author" content="David Hong">
 
   <style>
-    html, body { margin: 0; padding: 0; position: relative; }
-    #c0 { top: 0; left: 0; position: absolute; width: 300px; height: 50px; }
-    #d0 { top: 0; left: 0; position: absolute; width: 300px; height: 50px; }
+    html, body, div, canvas, p { margin: 0; padding: 0; position: relative; }
+    body { font: normal normal 400 12px/12px Georgia, sans-serif; }
+
+    canvas, div { margin: 5px auto; border: 1px solid #222; outline: 0; padding: 0; display: block; }
+    div p { bottom: 0; position: absolute; text-align: left; vertical-align: text-bottom; }
+
+    #c0 { width: 300px; height: 40px; }
+    #d0 { width: 300px; height: 20px; }
   </style>
 </head>
 
 <body>
-  <canvas id="c0" width="300" height="50"></canvas>
-  <div id="d0">Hello, World!</div>
+  <canvas id="c0" width="300" height="40"></canvas>
+  <div id="d0"><p>Hello, World!</p></div>
 
   <script src="scripts/parser.js"></script>
   <script src="scripts/core.js"></script>
@@ -35,8 +40,8 @@
         ctx.fillText(
           'Hello, World!', 
           0, 
-          c.height, 
-          'letter-spacing: 0px'
+          c.height - 2, 
+          'font: normal normal 400 12px/12px Georgia, sans-serif'
         );
   </script>
 

@@ -1,0 +1,303 @@
+<a href="http://github.com/davidhong/fillText"><img alt="Fork me on GitHub" id="ribbon" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a><html>
+	<head>
+		<title>Canvas.fillText + CSS</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<style>body {
+    margin: 0;
+    padding: 0;
+    font: 14px/1.5 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+    color: #252519;
+}
+a {
+    color: #252519;
+}
+a:hover {
+    text-decoration: underline;
+    color: #19469D;
+}
+p {
+    margin: 12px 0;
+}
+h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+table#source {
+    width: 100%;
+    border-collapse: collapse;
+}
+table#source td:first-child {
+    padding: 30px 40px 30px 40px;
+    vertical-align: top;
+}
+table#source td:first-child,
+table#source td:first-child pre {
+    width: 450px;
+}
+table#source td:last-child {
+    padding: 30px 0 30px 40px;
+    border-left: 1px solid #E5E5EE;
+    background: #F5F5FF;
+}
+table#source tr {
+    border-bottom: 1px solid #E5E5EE;
+}
+table#source tr.filename {
+    padding-top: 40px;
+    border-top: 1px solid #E5E5EE;
+}
+table#source tr.filename td:first-child {
+    text-transform: capitalize;
+}
+table#source tr.filename td:last-child {
+    font-size: 12px;
+}
+table#source tr.filename h2 {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+table#source tr.code h1,
+table#source tr.code h2,
+table#source tr.code h3 {
+    margin-top: 30px;
+    font-family: "Lucida Grande", "Helvetica Nueue", Arial, sans-serif;
+    font-size: 18px;
+}
+table#source tr.code h2 {
+    font-size: 16px;
+}
+table#source tr.code h3 {
+    font-size: 14px;
+}
+table#source tr.code ul {
+    margin: 15px 0 15px 35px;
+    padding: 0;
+}
+table#source tr.code ul li {
+    margin: 0;
+    padding: 1px 0;
+}
+table#source tr.code ul li p {
+    margin: 0;
+    padding: 0;
+}
+table#source tr.code td:first-child pre {
+    padding: 20px;
+}
+#ribbon {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+code .string { color: #219161; }
+code .regexp { color: #219161; }
+code .keyword { color: #954121; }
+code .number { color: #19469D; }
+code .comment { color: #bbb; }
+code .this { color: #19469D; }</style>
+		<script>
+			$(function(){
+				$('tr.code').hide();
+				$('tr.filename').toggle(function(){
+					$(this).nextUntil('.filename').fadeIn();
+				}, function(){
+					$(this).nextUntil('.filename').fadeOut();
+				});
+			});
+		</script>
+	</head>
+	<body>
+<table id="source"><tbody><tr><td><h1>Canvas.fillText + CSS</h1><p>CSS enabled Canvas fillText extension</p></td><td></td></tr><tr class="filename"><td><h2 id="src/core.js"><a href="#">core</a></h2></td><td>src/core.js</td></tr><tr class="code">
+<td class="docs">
+<p>An extension to <code>CanvasRenderingContext2D.prototype.fillText</code> to render text
+with CSS font, letter or word level properties such as:</p>
+
+<ul><li><code>letter-spacing</code></li><li><code>word-spacing</code></li><li><code>text-align</code></li></ul>
+
+<p>and much more!</p>
+
+<ul><li><strong>param</strong>: <em>parse</em>
+{function} a method which converts CSS-property strings into a JSON object</li></ul>
+</td>
+<td class="code">
+<pre><code>(<span class="keyword">function</span> (<span class="variable">window</span>, <span class="variable">parse</span>) {
+  <span class="string">'use strict'</span>;
+
+<span class="comment">// Log</span>
+
+  <span class="keyword">var</span> <span class="variable">log</span> = <span class="variable">window</span>.<span class="variable">log</span> || <span class="keyword">function</span> () {
+      <span class="keyword">if</span> (<span class="variable">window</span>.<span class="variable">console</span>) {
+        <span class="variable">window</span>.<span class="variable">console</span>.<span class="variable">log</span>(<span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>.<span class="variable">call</span>(<span class="variable">arguments</span>));
+      }
+    },
+
+<span class="comment">// Copy reference to previous fillText operation</span>
+  
+    <span class="variable">fillText</span> = <span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span>,
+
+<span class="comment">// Reference to commonly used methods</span>
+  
+    <span class="variable">slice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>,
+    <span class="variable">splice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">splice</span>,
+    <span class="variable">join</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">join</span>,
+    <span class="variable">reverse</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">reverse</span>,
+    <span class="variable">split</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">split</span>;
+
+<span class="comment">//</span>
+<span class="comment">// The new fillText(text, x, y, [css...]);</span>
+<span class="comment">//</span>
+<span class="comment">// @param text  {string}  Text to render on canvas</span>
+<span class="comment">// @param x     {number}  x-component of the cordinate to start from</span>
+<span class="comment">// @param y     {number}  y-component of the cordinate to start from</span>
+<span class="comment">// @param [css] {string}  CSS-style properties</span>
+<span class="comment">// @usage context.fillText('Apple', 0, 50, 'letter-spacing: 5px');</span>
+<span class="comment">//</span>
+
+  <span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span> = <span class="keyword">function</span> (<span class="variable">text</span>, <span class="variable">x</span>, <span class="variable">y</span>) {
+
+<span class="comment">// Argument type checking</span>
+
+    <span class="variable">text</span> = <span class="class">String</span>(<span class="variable">text</span>);
+    <span class="variable">x</span> = <span class="variable">parseInt</span>(<span class="variable">x</span>, <span class="number integer">10</span>);
+    <span class="variable">y</span> = <span class="variable">parseInt</span>(<span class="variable">y</span>, <span class="number integer">10</span>);
+
+<span class="comment">// Extract css properties</span>
+
+    <span class="keyword">var</span> <span class="variable">css</span> = <span class="variable">parse</span>.<span class="variable">apply</span>(<span class="variable">parse</span>, <span class="variable">splice</span>.<span class="variable">call</span>(<span class="variable">slice</span>.<span class="variable">call</span>(<span class="variable">arguments</span>), <span class="number integer">3</span>)),
+      <span class="variable">prop</span>, 
+      <span class="variable">i</span>,
+      <span class="variable">chars</span> = <span class="variable">split</span>.<span class="variable">call</span>(<span class="variable">text</span>, <span class="string">''</span>),
+      <span class="variable">charlen</span> = <span class="variable">chars</span>.<span class="variable">length</span>,
+      <span class="variable">c</span>,
+
+<span class="comment">// Firefox 6's default letter-spacing is different to Chrome 13</span>
+
+      <span class="variable">letterSpacing</span> = <span class="number integer">0</span>,
+      <span class="variable">wordSpacing</span>;
+
+<span class="comment">// Apply CSS properties recognised by this extension to canvas</span>
+
+    <span class="keyword">if</span> (<span class="variable">css</span>.<span class="variable">font</span>) {
+      <span class="this">this</span>.<span class="variable">font</span> = <span class="variable">css</span>.<span class="variable">font</span>;
+    }
+
+    <span class="keyword">if</span> (<span class="variable">css</span>.<span class="variable">letterSpacing</span>) {
+      <span class="variable">letterSpacing</span> += <span class="variable">parseFloat</span>(<span class="variable">css</span>.<span class="variable">letterSpacing</span>);
+    }
+
+<span class="comment">// Render</span>
+
+    <span class="variable">fillText</span>.<span class="variable">call</span>(<span class="this">this</span>, <span class="variable">text</span>, <span class="variable">x</span>, <span class="variable">y</span> - <span class="number integer">20</span>);
+
+    <span class="keyword">for</span> (<span class="variable">i</span> = <span class="number integer">0</span>; <span class="variable">i</span> &<span class="variable">lt</span>; <span class="variable">charlen</span>; <span class="variable">i</span> += <span class="number integer">1</span>) {
+      <span class="variable">x</span> = <span class="variable">i</span> === <span class="number integer">0</span> ? <span class="variable">x</span> : <span class="variable">x</span> + <span class="variable">letterSpacing</span>;
+      <span class="variable">c</span> = <span class="variable">chars</span>[<span class="variable">i</span>];
+      <span class="variable">fillText</span>.<span class="variable">call</span>(<span class="this">this</span>, <span class="variable">c</span>, <span class="variable">x</span>, <span class="variable">y</span>);
+      <span class="variable">x</span> += <span class="this">this</span>.<span class="variable">measureText</span>(<span class="variable">c</span>).<span class="variable">width</span>;
+
+      <span class="variable">log</span>(<span class="variable">c</span>, <span class="this">this</span>.<span class="variable">measureText</span>(<span class="variable">c</span>).<span class="variable">width</span>, <span class="variable">letterSpacing</span>);
+    }
+  };
+}(<span class="this">this</span>, <span class="variable">window</span>.<span class="variable">parse</span>));
+
+</code></pre>
+</td>
+</tr><tr class="filename"><td><h2 id="src/parser.js"><a href="#">parser</a></h2></td><td>src/parser.js</td></tr><tr class="code">
+<td class="docs">
+<p><em>CSS Parser method</em></p>
+
+<ul><li><p><strong>param</strong>: <em>css</em>
+-properties {string} Semi-colon delimitered CSS properties
+## </p></li><li><p><strong>returns</strong>: <em>object</em>  JSON-style name/value pair</p></li><li><p><strong>usag</strong>: <em>e</em>
+<code>parse('font-weight: 700; font-size: 1em', 'font-family: Verdana, sans-serif');</code></p></li></ul>
+
+<p>This is a pretty inefficient way of parsing CSS properties. The purpose here
+is to just parse the damn thing and have it referenced like:</p>
+
+<ul><li><code>css.fontWeight</code></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="keyword">var</span> <span class="variable">parse</span> = (<span class="keyword">function</span> () {
+  <span class="keyword">var</span> <span class="variable">slice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>,
+    <span class="variable">split</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">split</span>,
+    <span class="variable">trim</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">trim</span>,
+    <span class="variable">forEach</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">forEach</span>,
+    <span class="variable">replace</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">replace</span>,
+    <span class="variable">map</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">map</span>,
+    <span class="variable">toUpperCase</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">toUpperCase</span>,</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> <code>String.prototype.camelCase</code> (i.e., this == the string) </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">camelCase</span> = <span class="keyword">function</span> () {
+      <span class="keyword">return</span> <span class="variable">replace</span>.<span class="variable">call</span>(<span class="this">this</span>, <span class="regexp">/-([a-z])/gi</span>, <span class="keyword">function</span> (<span class="variable">s</span>, <span class="variable">c</span>) {
+        <span class="keyword">return</span> <span class="variable">toUpperCase</span>.<span class="variable">call</span>(<span class="variable">c</span>);
+      });
+    },</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Determine if the given value requires a unit. If it does, attach default
+unit of 'px' and return in string format
+ </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">unit_r</span> = <span class="regexp">/^-*(\d+)+\.*(\d)*$/</span>,
+    <span class="class">DEFAULT_UNIT</span> = <span class="string">'px'</span>,
+
+    <span class="variable">defaultUnit</span> = <span class="keyword">function</span> (<span class="variable">value</span>) {
+      <span class="keyword">if</span> (<span class="variable">unit_r</span>.<span class="variable">test</span>(<span class="variable">value</span>)) {
+        <span class="keyword">return</span> <span class="variable">value</span> + <span class="class">DEFAULT_UNIT</span>;
+      }
+
+      <span class="keyword">return</span> <span class="variable">value</span> + <span class="string">''</span>;
+    };
+    
+  <span class="keyword">return</span> <span class="keyword">function</span> () {
+    <span class="keyword">var</span> <span class="variable">styles</span> = <span class="variable">slice</span>.<span class="variable">call</span>(<span class="variable">arguments</span>),
+      <span class="variable">css</span> = {};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> Some ugly shit. Look at it at your own pace </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">forEach</span>.<span class="variable">call</span>(<span class="variable">styles</span>, <span class="keyword">function</span> (<span class="variable">style</span>) {
+      <span class="keyword">var</span> <span class="variable">properties</span> = <span class="variable">split</span>.<span class="variable">call</span>(<span class="variable">style</span>, <span class="string">';'</span>);
+      <span class="variable">forEach</span>.<span class="variable">call</span>(<span class="variable">properties</span>, <span class="keyword">function</span> (<span class="variable">property</span>) {
+        <span class="keyword">try</span> {
+          <span class="keyword">var</span> <span class="variable">pair</span> = <span class="variable">split</span>.<span class="variable">call</span>(<span class="variable">property</span>, <span class="string">':'</span>),
+            <span class="variable">name</span> = <span class="variable">camelCase</span>.<span class="variable">call</span>(<span class="variable">trim</span>.<span class="variable">call</span>(<span class="variable">pair</span>[<span class="number integer">0</span>])),
+            <span class="variable">value</span> = <span class="variable">defaultUnit</span>(<span class="variable">trim</span>.<span class="variable">call</span>(<span class="variable">pair</span>[<span class="number integer">1</span>]));
+
+          <span class="variable">css</span>[<span class="variable">name</span>] = <span class="variable">value</span>;
+        } <span class="keyword">catch</span> (<span class="variable">propertyError</span>) {
+          <span class="variable">console</span>.<span class="variable">error</span>(<span class="variable">propertyError</span>);
+        }
+      });
+    });
+        
+    <span class="keyword">return</span> <span class="variable">css</span>;
+  };
+}());</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> For node.js, export parse method for testing </p>
+</td>
+<td class="code">
+<pre><code><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="variable">exports</span> !== <span class="string">'undefined'</span>) {
+  <span class="variable">exports</span>.<span class="variable">parse</span> = <span class="variable">parse</span>;
+}
+
+</code></pre>
+</td>
+</tr>	</body>
+</html></tbody></table>
