@@ -108,17 +108,20 @@ code .this { color: #19469D; }</style>
 		</script>
 	</head>
 	<body>
-<table id="source"><tbody><tr><td><h1>Canvas.fillText + CSS</h1><p>CSS enabled Canvas fillText extension</p></td><td></td></tr><tr class="filename"><td><h2 id="src/core.js"><a href="#">core</a></h2></td><td>src/core.js</td></tr><tr class="code">
+<table id="source"><tbody><tr><td><h1>Canvas.fillText + CSS</h1><p>CSS enabled Canvas fillText extension</p></td><td></td></tr><tr class="filename"><td><h2 id="src/intro.js"><a href="#">intro</a></h2></td><td>src/intro.js</td></tr><tr class="filename"><td><h2 id="src/outro.js"><a href="#">outro</a></h2></td><td>src/outro.js</td></tr><tr class="filename"><td><h2 id="src/core.js"><a href="#">core</a></h2></td><td>src/core.js</td></tr><tr class="code">
 <td class="docs">
+<h1>All new fillText</h1>
+
 <p>An extension to <code>CanvasRenderingContext2D.prototype.fillText</code> to render text
 with CSS font, letter or word level properties such as:</p>
 
 <ul><li><code>letter-spacing</code></li><li><code>word-spacing</code></li><li><code>text-align</code></li></ul>
 
-<p>and much more!</p>
+<p>and much more! (coming)</p>
 
-<ul><li><strong>param</strong>: <em>parse</em>
-{function} a method which converts CSS-property strings into a JSON object</li></ul>
+<ul><li><strong>param</strong>: <em>window</em>
+{object}    global object</li><li><strong>param</strong>: <em>parse</em>
+{function}  a method which converts CSS-property strings into a JSON object</li></ul>
 </td>
 <td class="code">
 <pre><code>(<span class="keyword">function</span> (<span class="variable">window</span>, <span class="variable">parse</span>) {
@@ -130,31 +133,42 @@ with CSS font, letter or word level properties such as:</p>
       <span class="keyword">if</span> (<span class="variable">window</span>.<span class="variable">console</span>) {
         <span class="variable">window</span>.<span class="variable">console</span>.<span class="variable">log</span>(<span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>.<span class="variable">call</span>(<span class="variable">arguments</span>));
       }
-    },
-
-<span class="comment">// Copy reference to previous fillText operation</span>
-  
-    <span class="variable">fillText</span> = <span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span>,
-
-<span class="comment">// Reference to commonly used methods</span>
-  
-    <span class="variable">slice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>,
+    },</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> Copy reference to previous fillText operation </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">fillText</span> = <span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span>,</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> Reference to commonly used methods </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">slice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">slice</span>,
     <span class="variable">splice</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">splice</span>,
     <span class="variable">join</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">join</span>,
     <span class="variable">reverse</span> = <span class="class">Array</span>.<span class="variable">prototype</span>.<span class="variable">reverse</span>,
-    <span class="variable">split</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">split</span>;
+    <span class="variable">split</span> = <span class="class">String</span>.<span class="variable">prototype</span>.<span class="variable">split</span>;</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>The new <code>fillText(text, x, y, [css...]);</code></p>
 
-<span class="comment">//</span>
-<span class="comment">// The new fillText(text, x, y, [css...]);</span>
-<span class="comment">//</span>
-<span class="comment">// @param text  {string}  Text to render on canvas</span>
-<span class="comment">// @param x     {number}  x-component of the cordinate to start from</span>
-<span class="comment">// @param y     {number}  y-component of the cordinate to start from</span>
-<span class="comment">// @param [css] {string}  CSS-style properties</span>
-<span class="comment">// @usage context.fillText('Apple', 0, 50, 'letter-spacing: 5px');</span>
-<span class="comment">//</span>
-
-  <span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span> = <span class="keyword">function</span> (<span class="variable">text</span>, <span class="variable">x</span>, <span class="variable">y</span>) {
+<ul><li><strong>param</strong>: <em>text</em>
+{string}  Text to render on canvas</li><li><strong>param</strong>: <em>x</em>
+ {number}  x-component of the cordinate to start from</li><li><strong>param</strong>: <em>y</em>
+ {number}  y-component of the cordinate to start from</li><li><strong>para</strong>: <em>m</em>
+[css] {string}  CSS-style properties</li><li><strong>usage</strong>: <em>context</em>
+.fillText('Apple', 0, 50, 'letter-spacing: 5px');</li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">window</span>.<span class="class">CanvasRenderingContext2D</span>.<span class="variable">prototype</span>.<span class="variable">fillText</span> = <span class="keyword">function</span> (<span class="variable">text</span>, <span class="variable">x</span>, <span class="variable">y</span>) {
 
 <span class="comment">// Argument type checking</span>
 
@@ -169,28 +183,38 @@ with CSS font, letter or word level properties such as:</p>
       <span class="variable">i</span>,
       <span class="variable">chars</span> = <span class="variable">split</span>.<span class="variable">call</span>(<span class="variable">text</span>, <span class="string">''</span>),
       <span class="variable">charlen</span> = <span class="variable">chars</span>.<span class="variable">length</span>,
-      <span class="variable">c</span>,
-
-<span class="comment">// Firefox 6's default letter-spacing is different to Chrome 13</span>
-
-      <span class="variable">letterSpacing</span> = <span class="number integer">0</span>,
-      <span class="variable">wordSpacing</span>;
-
-<span class="comment">// Apply CSS properties recognised by this extension to canvas</span>
-
-    <span class="keyword">if</span> (<span class="variable">css</span>.<span class="variable">font</span>) {
+      <span class="variable">c</span>,</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> NOTE: Firefox 6's default letter-spacing is different to Chrome, Safari, IE9+ </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">letterSpacing</span> = <span class="number integer">0</span>,
+      <span class="variable">wordSpacing</span>;</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> Apply CSS properties recognised by this extension to canvas </p>
+</td>
+<td class="code">
+<pre><code><span class="keyword">if</span> (<span class="variable">css</span>.<span class="variable">font</span>) {
       <span class="this">this</span>.<span class="variable">font</span> = <span class="variable">css</span>.<span class="variable">font</span>;
     }
 
     <span class="keyword">if</span> (<span class="variable">css</span>.<span class="variable">letterSpacing</span>) {
       <span class="variable">letterSpacing</span> += <span class="variable">parseFloat</span>(<span class="variable">css</span>.<span class="variable">letterSpacing</span>);
-    }
-
-<span class="comment">// Render</span>
-
-    <span class="variable">fillText</span>.<span class="variable">call</span>(<span class="this">this</span>, <span class="variable">text</span>, <span class="variable">x</span>, <span class="variable">y</span> - <span class="number integer">20</span>);
-
-    <span class="keyword">for</span> (<span class="variable">i</span> = <span class="number integer">0</span>; <span class="variable">i</span> &<span class="variable">lt</span>; <span class="variable">charlen</span>; <span class="variable">i</span> += <span class="number integer">1</span>) {
+    }</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p> Render </p>
+</td>
+<td class="code">
+<pre><code><span class="keyword">for</span> (<span class="variable">i</span> = <span class="number integer">0</span>; <span class="variable">i</span> &<span class="variable">lt</span>; <span class="variable">charlen</span>; <span class="variable">i</span> += <span class="number integer">1</span>) {
       <span class="variable">x</span> = <span class="variable">i</span> === <span class="number integer">0</span> ? <span class="variable">x</span> : <span class="variable">x</span> + <span class="variable">letterSpacing</span>;
       <span class="variable">c</span> = <span class="variable">chars</span>[<span class="variable">i</span>];
       <span class="variable">fillText</span>.<span class="variable">call</span>(<span class="this">this</span>, <span class="variable">c</span>, <span class="variable">x</span>, <span class="variable">y</span>);
@@ -205,17 +229,23 @@ with CSS font, letter or word level properties such as:</p>
 </td>
 </tr><tr class="filename"><td><h2 id="src/parser.js"><a href="#">parser</a></h2></td><td>src/parser.js</td></tr><tr class="code">
 <td class="docs">
-<p><em>CSS Parser method</em></p>
+<h1>CSS Parser method</h1>
 
-<ul><li><p><strong>param</strong>: <em>css</em>
--properties {string} Semi-colon delimitered CSS properties
-## </p></li><li><p><strong>returns</strong>: <em>object</em>  JSON-style name/value pair</p></li><li><p><strong>usag</strong>: <em>e</em>
-<code>parse('font-weight: 700; font-size: 1em', 'font-family: Verdana, sans-serif');</code></p></li></ul>
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>string</em>  Semi-colon delimitered CSS properties</p></li><li><p><strong>returns</strong>: <em>object</em>  JSON-style name/value pair</p></li></ul>
+
+<h2>usage</h2>
+
+<p><code>parse('font-weight: 700; font-size: 1em', 'font-family: Verdana, sans-serif');</code></p>
 
 <p>This is a pretty inefficient way of parsing CSS properties. The purpose here
 is to just parse the damn thing and have it referenced like:</p>
 
-<ul><li><code>css.fontWeight</code></li></ul>
+<ul><li><code>css.fontWeight</code></li><li><code>css.lineHeight</code></li><li><code>css.letterSpacing</code></li></ul>
+
+<p>DO WHATEVER LICENSE
+ </p>
 </td>
 <td class="code">
 <pre><code><span class="keyword">var</span> <span class="variable">parse</span> = (<span class="keyword">function</span> () {
@@ -243,7 +273,7 @@ is to just parse the damn thing and have it referenced like:</p>
 <tr class="code">
 <td class="docs">
 <p>Determine if the given value requires a unit. If it does, attach default
-unit of 'px' and return in string format
+unit of <code>'px'</code> and return in string format
  </p>
 </td>
 <td class="code">
@@ -290,7 +320,7 @@ unit of 'px' and return in string format
 </tr>
 <tr class="code">
 <td class="docs">
-<p> For node.js, export parse method for testing </p>
+<p> For <code>node.js</code>, export parse method for testing </p>
 </td>
 <td class="code">
 <pre><code><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="variable">exports</span> !== <span class="string">'undefined'</span>) {

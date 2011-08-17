@@ -8,6 +8,7 @@ DIST_DIR = ${PREFIX}/dist
 JS_ENGINE ?= `which node nodejs`
 COMPILER = ${JS_ENGINE} ${BUILD_DIR}/uglify.js --unsafe
 POST_COMPILER = ${JS_ENGINE} ${BUILD_DIR}/post-compile.js
+DOC_ENGINE = `dox --title 'Canvas.fillText with CSS support' --desc '' `
 
 BASE_FILES = ${SRC_DIR}/parser.js\
 	${SRC_DIR}/core.js\
@@ -96,3 +97,4 @@ pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
 .PHONY: all canvas lint min clean distclean update_submodules pull_submodules pull core
+

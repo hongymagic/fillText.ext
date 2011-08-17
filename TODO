@@ -1,0 +1,6 @@
+# TODO
+
+  - include `dox` documentation engine in build process
+  - write/find a better css-property parser
+  - character rendering optimisation
+
