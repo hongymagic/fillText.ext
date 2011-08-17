@@ -1,15 +1,22 @@
 
 /**
- * *CSS Parser method*
+ * # CSS Parser method #
  *
- * @param css-properties {string} Semi-colon delimitered CSS properties
+ * @param   {string} Semi-colon delimitered CSS properties
  * @returns {object} JSON-style name/value pair
- * @usage `parse('font-weight: 700; font-size: 1em', 'font-family: Verdana, sans-serif');`
+ * 
+ * ## usage ##
+ *
+ * `parse('font-weight: 700; font-size: 1em', 'font-family: Verdana, sans-serif');`
  *
  * This is a pretty inefficient way of parsing CSS properties. The purpose here
  * is to just parse the damn thing and have it referenced like:
  *
  *  - `css.fontWeight`
+ *  - `css.lineHeight`
+ *  - `css.letterSpacing`
+ *
+ * DO WHATEVER LICENSE
  */
 var parse = (function () {
   var slice = Array.prototype.slice,
@@ -30,7 +37,7 @@ var parse = (function () {
 
 /**
  * Determine if the given value requires a unit. If it does, attach default
- * unit of 'px' and return in string format
+ * unit of `'px'` and return in string format
  */
 
     unit_r = /^-*(\d+)+\.*(\d)*$/,
@@ -69,7 +76,7 @@ var parse = (function () {
   };
 }());
 
-/* For node.js, export parse method for testing */
+/* For `node.js`, export parse method for testing */
 if (typeof exports !== 'undefined') {
   exports.parse = parse;
 }

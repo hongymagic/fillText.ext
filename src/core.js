@@ -1,5 +1,7 @@
 
 /**
+ * # All new fillText #
+ *
  * An extension to `CanvasRenderingContext2D.prototype.fillText` to render text
  * with CSS font, letter or word level properties such as:
  *
@@ -7,9 +9,10 @@
  *  - `word-spacing`
  *  - `text-align`
  * 
- * and much more!
+ * and much more! (coming)
  *
- * @param parse {function} a method which converts CSS-property strings into a JSON object
+ * @param window  {object}    global object
+ * @param parse   {function}  a method which converts CSS-property strings into a JSON object
  */
 (function (window, parse) {
   'use strict';
@@ -22,11 +25,11 @@
       }
     },
 
-// Copy reference to previous fillText operation
+/* Copy reference to previous fillText operation */
   
     fillText = window.CanvasRenderingContext2D.prototype.fillText,
 
-// Reference to commonly used methods
+/* Reference to commonly used methods */
   
     slice = Array.prototype.slice,
     splice = Array.prototype.splice,
@@ -34,15 +37,15 @@
     reverse = Array.prototype.reverse,
     split = String.prototype.split;
 
-//
-// The new fillText(text, x, y, [css...]);
-//
-// @param text  {string}  Text to render on canvas
-// @param x     {number}  x-component of the cordinate to start from
-// @param y     {number}  y-component of the cordinate to start from
-// @param [css] {string}  CSS-style properties
-// @usage context.fillText('Apple', 0, 50, 'letter-spacing: 5px');
-//
+/*
+ * The new `fillText(text, x, y, [css...]);`
+ *
+ * @param text  {string}  Text to render on canvas
+ * @param x     {number}  x-component of the cordinate to start from
+ * @param y     {number}  y-component of the cordinate to start from
+ * @param [css] {string}  CSS-style properties
+ * @usage context.fillText('Apple', 0, 50, 'letter-spacing: 5px');
+ */
 
   window.CanvasRenderingContext2D.prototype.fillText = function (text, x, y) {
 
@@ -61,12 +64,12 @@
       charlen = chars.length,
       c,
 
-// Firefox 6's default letter-spacing is different to Chrome 13
+/* NOTE: Firefox 6's default letter-spacing is different to Chrome, Safari, IE9+ */
 
       letterSpacing = 0,
       wordSpacing;
 
-// Apply CSS properties recognised by this extension to canvas
+/* Apply CSS properties recognised by this extension to canvas */
 
     if (css.font) {
       this.font = css.font;
@@ -76,9 +79,7 @@
       letterSpacing += parseFloat(css.letterSpacing);
     }
 
-// Render
-
-    fillText.call(this, text, x, y - 20);
+/* Render */
 
     for (i = 0; i < charlen; i += 1) {
       x = i === 0 ? x : x + letterSpacing;
