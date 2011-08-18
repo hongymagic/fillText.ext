@@ -64,8 +64,10 @@
       charlen = chars.length,
       c,
 
-/* NOTE: Firefox 6's default letter-spacing is different to Chrome, Safari, IE9+ */
-
+/**
+ * Firefox 6's measureText([single char]) is different to Chrome, Safari, IE9+
+ * see [Bugzilla](563758)
+ */
       letterSpacing = 0,
       wordSpacing;
 
