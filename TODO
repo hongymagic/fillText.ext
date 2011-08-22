@@ -3,4 +3,5 @@
   - include `dox` documentation engine in build process
   - write/find a better css-property parser
   - character rendering optimisation
+  - `em` units to be based on 16px if not set on `<canvas>` parent or cannot be inherited
 
