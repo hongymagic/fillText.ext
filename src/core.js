@@ -17,7 +17,7 @@
 (function (window, parse) {
   'use strict';
 
-// Log
+/* TODO: intro.js */
 
   var log = window.log || function () {
       if (window.console) {
@@ -29,6 +29,7 @@
   
     fillText = window.CanvasRenderingContext2D.prototype.fillText,
 
+/* TODO: intro.js */
 /* Reference to commonly used methods */
   
     slice = Array.prototype.slice,
@@ -63,6 +64,7 @@
       chars = split.call(text, ''),
       charlen = chars.length,
       c,
+      charAdvancement,
 
 /**
  * Firefox 6's measureText([single char]) is different to Chrome, Safari, IE9+
@@ -70,6 +72,11 @@
  */
       letterSpacing = 0,
       wordSpacing;
+
+    this.current = {
+      x: x, 
+      y: y
+    };
 
 /* Apply CSS properties recognised by this extension to canvas */
 
@@ -81,16 +88,24 @@
       letterSpacing += parseFloat(css.letterSpacing);
     }
 
-/* Render */
 
-    for (i = 0; i < charlen; i += 1) {
-      x = i === 0 ? x : x + letterSpacing;
-      c = chars[i];
-      fillText.call(this, c, x, y);
-      x += this.measureText(c).width;
+    if (css.letterSpacing !== 0) {
 
-      log(c, this.measureText(c).width, letterSpacing);
+/* Render, character by character if CSS was given */
+
+      for (i = 0; i < charlen; i += 1) {
+        fillText.call(this, c, x, y);
+        charAdvancement = this.measureText(x).width + letterSpacing;
+        this.current.x += charAdvancement;
+      }
+    } else {
+
+/* No CSS was given, so render it normally */
+
+      fillText.call(this, text, x, y);
+      this.current.x += this.measureText(x).width;
     }
+
   };
 }(this, window.parse));
 

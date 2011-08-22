@@ -48,7 +48,7 @@ var parse = (function () {
         return value + DEFAULT_UNIT;
       }
 
-      return value + '';
+      return String(value);
     };
     
   return function () {
@@ -77,7 +77,7 @@ var parse = (function () {
 }());
 
 /* For `node.js`, export parse method for testing */
-if (typeof exports !== 'undefined') {
-  exports.parse = parse;
+if (typeof module.exports !== 'undefined') {
+  module.exports.parse = parse;
 }
 
